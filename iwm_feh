@@ -1,0 +1,117 @@
+#!/bin/dash
+# Ver.iwm20241024
+
+iwm_SubPkgInstall "feh" "yad"
+
+Title="壁紙変更"
+
+#------------------------------------------
+# RtnSelectImage
+#   $1 = 壁紙のファイル名 (例) ~/bg01.jpg
+#------------------------------------------
+RtnSelectImage ()
+{
+	_fn="${1}"
+
+	if [ -z "${_fn}" ]
+	then
+		_fn="${HOME}"
+	fi
+
+	_rtn=$( \
+		yad \
+		--file \
+		--filename="${_fn}" \
+		--file-filter="画像 ファイル (*.jpg *.png *.gif) | *.jpg *.png *.gif" \
+		--file-filter="すべてのファイル | *" \
+		--add-preview \
+		--large-preview \
+		--title="${Title}" \
+		--width=600 \
+		--center \
+		--on-top \
+	)
+
+	echo "${_rtn}"
+}
+
+readonly CbList="center|fill|scale|tile"
+
+#----------------------------------
+# RtnSelectBgStyle
+#   $1 = 壁紙の配置方法 (例) fill
+#----------------------------------
+RtnSelectBgStyle ()
+{
+	if [ -z "${1}" ]
+	then
+		CbList_1="${CbList}"
+	else
+		CbList_1="${1}|${CbList}"
+	fi
+
+	_rtn=$( \
+		yad \
+		--item-separator="|" \
+		--separator="" \
+		--form \
+		--field="配置":CB "${CbList_1}" \
+		--title="${Title}" \
+		--center \
+		--on-top \
+	)
+
+	echo "${_rtn}"
+}
+
+#--------------
+# RtnDialogYN
+#--------------
+RtnDialogYN ()
+{
+	$( \
+		yad \
+		--image="dialog-question" \
+		--text "確定しますか ?\n" \
+		--title="${Title}" \
+		--center \
+		--on-top \
+	)
+
+	if [ "${?}" = "0" ]
+	then
+		echo ""
+	else
+		echo "1"
+	fi
+}
+
+#-------
+# main
+#-------
+ImageFile=""
+BgStyle=""
+Repeat=""
+
+while true
+do
+	ImageFile=$(RtnSelectImage "${ImageFile}")
+		if [ -z "${ImageFile}" ]
+		then
+			break
+		fi
+
+	BgStyle=$(RtnSelectBgStyle "${BgStyle}")
+		if [ -z "${BgStyle}" ]
+		then
+			break
+		fi
+
+	feh --bg-${BgStyle} ${ImageFile}
+
+	Repeat=$(RtnDialogYN)
+		if [ -z "${Repeat}" ]
+		then
+			break
+		fi
+done

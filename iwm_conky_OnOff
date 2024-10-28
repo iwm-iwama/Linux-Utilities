@@ -1,0 +1,13 @@
+#!/bin/dash
+# Ver.iwm20230304
+
+Pid=$(pgrep -x "conky")
+if [ ${#Pid} = 0 ]
+then
+	conky & 2>/dev/null
+else
+	for _s1 in "${Pid}"
+	do
+		kill "${_s1}"
+	done
+fi

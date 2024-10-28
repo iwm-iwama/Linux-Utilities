@@ -1,0 +1,52 @@
+#!/bin/dash
+# Ver.iwm20230923
+
+List="${HOME}/iwm_installed-pkg.list"
+
+CmdApt=$(cat <<-EOD
+	# 破損パッケージ修正
+	sudo dpkg --configure -a
+	sudo apt update
+	sudo apt upgrade
+	sudo apt dist-upgrade
+	sudo apt autoclean
+	sudo apt autoremove
+	# パッケージ一覧
+	dpkg --list | grep -E "^i" > "${List}"
+EOD
+)
+
+CmdDnf=$(cat <<-EOD
+	sudo dnf check-update
+	sudo dnf upgrade
+	sudo dnf autoremove
+	# パッケージ一覧
+	dnf list --installed | grep -i -E "^[A-Z]" > "${List}"
+EOD
+)
+
+Cmd=""
+case $(iwm_RtnPkgManager) in
+	*apt)
+		Cmd="${CmdApt}"
+		;;
+	*dnf)
+		Cmd="${CmdDnf}"
+		;;
+	*)
+		;;
+esac
+
+clear
+
+IFS="
+"
+for _s1 in $(echo "${Cmd}" | grep -i -E "[A-Z]")
+do
+	echo "\033[97;44m ${_s1} \033[0m"
+	eval "${_s1}"
+	echo
+done
+
+echo -n "(END)"
+read s1

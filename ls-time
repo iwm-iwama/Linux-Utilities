@@ -1,0 +1,4 @@
+#!/bin/dash
+# Ver.iwm20241015
+
+ls -la --time-style="+%Y/%m/%d_%H:%m:%S"

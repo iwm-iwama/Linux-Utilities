@@ -1,0 +1,12 @@
+#!/bin/dash
+
+# openbox
+# xfce
+case "$DESKTOP_SESSION" in
+	"openbox")
+		openbox --exit
+		;;
+	*)
+		xfce4-session-logout --logout
+		;;
+esac
