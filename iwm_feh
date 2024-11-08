@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241024
+# Ver.iwm20241108
 
 iwm_SubPkgInstall "feh" "yad"
 
@@ -9,7 +9,7 @@ Title="壁紙変更"
 # RtnSelectImage
 #   $1 = 壁紙のファイル名 (例) ~/bg01.jpg
 #------------------------------------------
-RtnSelectImage ()
+RtnSelectImage()
 {
 	_fn="${1}"
 
@@ -18,7 +18,7 @@ RtnSelectImage ()
 		_fn="${HOME}"
 	fi
 
-	_rtn=$( \
+	_rtn=$(
 		yad \
 		--file \
 		--filename="${_fn}" \
@@ -27,10 +27,11 @@ RtnSelectImage ()
 		--add-preview \
 		--large-preview \
 		--title="${Title}" \
-		--width=600 \
+		--width="640" \
 		--center \
 		--on-top \
-	)
+ 		2>/dev/null \
+ 	)
 
 	echo "${_rtn}"
 }
@@ -41,7 +42,7 @@ readonly CbList="center|fill|scale|tile"
 # RtnSelectBgStyle
 #   $1 = 壁紙の配置方法 (例) fill
 #----------------------------------
-RtnSelectBgStyle ()
+RtnSelectBgStyle()
 {
 	if [ -z "${1}" ]
 	then
@@ -50,15 +51,17 @@ RtnSelectBgStyle ()
 		CbList_1="${1}|${CbList}"
 	fi
 
-	_rtn=$( \
+	_rtn=$(
 		yad \
 		--item-separator="|" \
 		--separator="" \
 		--form \
 		--field="配置":CB "${CbList_1}" \
 		--title="${Title}" \
+		--fixed \
 		--center \
 		--on-top \
+ 		2>/dev/null \
 	)
 
 	echo "${_rtn}"
@@ -67,15 +70,17 @@ RtnSelectBgStyle ()
 #--------------
 # RtnDialogYN
 #--------------
-RtnDialogYN ()
+RtnDialogYN()
 {
-	$( \
+	$(
 		yad \
 		--image="dialog-question" \
 		--text "確定しますか ?\n" \
 		--title="${Title}" \
+		--fixed \
 		--center \
 		--on-top \
+ 		2>/dev/null \
 	)
 
 	if [ "${?}" = "0" ]
@@ -96,22 +101,19 @@ Repeat=""
 while true
 do
 	ImageFile=$(RtnSelectImage "${ImageFile}")
-		if [ -z "${ImageFile}" ]
-		then
-			break
-		fi
+	if [ -z "${ImageFile}" ]
+	then
+		break
+	fi
 
 	BgStyle=$(RtnSelectBgStyle "${BgStyle}")
-		if [ -z "${BgStyle}" ]
-		then
-			break
-		fi
-
-	feh --bg-${BgStyle} ${ImageFile}
-
-	Repeat=$(RtnDialogYN)
+	if [ -n "${BgStyle}" ]
+	then
+		feh --bg-${BgStyle} ${ImageFile}
+		Repeat=$(RtnDialogYN)
 		if [ -z "${Repeat}" ]
 		then
 			break
 		fi
+	fi
 done

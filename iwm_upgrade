@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20230923
+# Ver.iwm20241108
 
 List="${HOME}/iwm_installed-pkg.list"
 
@@ -26,16 +26,12 @@ EOD
 )
 
 Cmd=""
-case $(iwm_RtnPkgManager) in
-	*apt)
-		Cmd="${CmdApt}"
-		;;
-	*dnf)
-		Cmd="${CmdDnf}"
-		;;
-	*)
-		;;
-esac
+if [ -n "$(which dnf)" ]
+then
+	Cmd="${CmdDnf}"
+else
+	Cmd="${CmdApt}"
+fi
 
 clear
 

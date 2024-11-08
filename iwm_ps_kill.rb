@@ -3,7 +3,7 @@
 
 require "reline"
 
-VERSION = "iwm20241015"
+VERSION = "iwm20241102"
 TITLE   = "検索プロセスをkill"
 
 class ClassTerminal
@@ -97,18 +97,18 @@ class ClassProcess
 	def list()
 		print(
 			"\033[93m",
-			"\033[3G", "?",
+			"\033[3G", "ID",
 			"\033[8G", "PID",
 			"\033[15G", "CMD",
 			"\n"
 		)
 		@aryProcess.each do |_a1|
-			printf(
-				"\033[3G\033[93m%-4d \033[97m%-6s \033[96m%s\n",
-				_a1[0],
-				_a1[1],
-				_a1[2],
-			)
+		print(
+			"\033[93m", "\033[3G", _a1[0],
+			"\033[37m", "\033[8G", _a1[1],
+			"\033[96m", "\033[15G", _a1[2],
+			"\n"
+		)
 		end
 	end
 
@@ -153,7 +153,7 @@ SubHelp()
 $SeachKey = nil
 
 while true
-	puts "\033[95mps -A | grep \033[97m\033[44m 検索=文字列 \033[49m"
+	puts "\033[97m\033[44m 検索=文字列 \033[49m"
 	while true
 		$SeachKey = Process.readline
 		if Process.get_search($SeachKey).length > 0
@@ -163,7 +163,7 @@ while true
 	end
 
 	while true
-		puts "\033[95mkill \033[97m\033[41m 選択=n1 n2 ... \033[42m すべて選択=0 \033[44m 再検索=文字列 \033[49m"
+		puts "\033[95mkill \033[97m\033[41m 選択=ID1 ID2 ... \033[42m すべて選択=0 \033[44m 再検索=文字列 \033[49m"
 		aKey = Process.readline.split(" ")
 		if aKey.length == 0
 			next

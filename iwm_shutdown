@@ -1,8 +1,8 @@
 #!/bin/dash
-# Ver.iwm20241016
+# Ver.iwm20241101
 
 # 入力履歴消去
-echo > ${HOME}/.bash_history
+find ${HOME} -name "*_history*" | xargs rm -rf
 
 # su -
 ## iwm_sudo true
