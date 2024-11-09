@@ -43,10 +43,7 @@ Term = Class_Terminal.new
 class Class_Lsblk
 	# lsblk -o 末尾 "PATH" は番兵
 	X = %x(
-		LANG=C \
-		lsblk \
-		--raw \
-		-o TYPE,KNAME,LABEL,FSTYPE,SIZE,PARTTYPENAME,PATH \
+		LANG=C lsblk --raw -o TYPE,KNAME,LABEL,FSTYPE,SIZE,PARTTYPENAME,PATH \
 		| grep -E '^[^rom]' \
 	)
 
@@ -235,12 +232,8 @@ if STDIN.gets.strip == "1"
 			_s1 << (_OByte < 0 ? "bs=4M" : "bs=#{_OByte} count=1")
 			_s1 << "\n\n"
 
-			%x(
-				lsblk \
-				-l \
-				-o NAME,SIZE,FSTYPE,LABEL \
-				#{_IF} \
-			).split("\n").each do |_s2|
+			%x(lsblk -l -o NAME,SIZE,FSTYPE,LABEL #{_IF})
+			.split("\n").each do |_s2|
 				_s1 << "# #{_s2}\n"
 			end
 

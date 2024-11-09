@@ -72,16 +72,14 @@ RtnSelectBgStyle()
 #--------------
 RtnDialogYN()
 {
-	$(
-		yad \
+	yad \
 		--image="dialog-question" \
 		--text "確定しますか ?\n" \
 		--title="${Title}" \
 		--fixed \
 		--center \
 		--on-top \
- 		2>/dev/null \
-	)
+ 		2>/dev/null
 
 	if [ "${?}" = "0" ]
 	then

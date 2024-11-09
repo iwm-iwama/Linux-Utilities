@@ -5,26 +5,26 @@
 #   dash: iwm_SubPkgInstall "pv" "yad"
 #   ruby: %x(iwm_SubPkgInstall "pv" "yad")
 #------------------------------------------------------------------------
-Dpkg=$(dpkg -l)
 
 # xterm をインストール
-Installed=$(echo "${Dpkg}" | grep " xterm ")
-if [ -z "${Installed}" ]
+if [ -z "$(which xterm)" ]
 then
 	sudo apt install xterm
 fi
 
+# パッケージのリスト取得
+Dpkg=$(dpkg -l)
+
 # パッケージをインストール
 for _s1 in "${@}"
 do
-	Installed=$(echo "${Dpkg}" | grep " ${_s1} ")
-	if [ -z "${Installed}" ]
+	_s2=$(echo "${Dpkg}" | grep " ${_s1} ")
+	if [ -z "${_s2}" ]
 	then
-		$(
-			xterm \
-			-title "必要なパッケージをインストール" \
+		xterm \
+			-geometry "60x20" \
+			-title "${_s1} をインストール" \
 			-fa "Liberation Mono:size=11:antialias=true" \
-			-e "sudo apt install ${_s1}; sleep 3;" \
-		)
+			-e "sudo apt install ${_s1};"
 	fi
 done

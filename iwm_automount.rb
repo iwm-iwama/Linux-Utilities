@@ -6,10 +6,7 @@ TITLE   = "Windowsドライブを/media/${USER}/以下にマウント"
 
 class Class_Lsblk
 	X = %x(
-		LANG=C \
-		lsblk \
-		--raw \
-		-o PARTTYPENAME,LABEL,PATH \
+		LANG=C lsblk --raw -o PARTTYPENAME,LABEL,PATH \
 		| grep -E '^Microsoft\\\\x20basic\\\\x20data' \
 	)
 
