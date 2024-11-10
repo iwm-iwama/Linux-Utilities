@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241108
+# Ver.iwm20241109
 #--------------------------------------------------------------------------------
 # 使用例（"pv" "yad" をインストール）
 #   dash: iwm_SubPkgInstall "pv" "yad"
@@ -7,18 +7,20 @@
 #------------------------------------------------------------------------
 
 # xterm をインストール
-if [ -z "$(which xterm)" ]
+if [ ! -f "/usr/bin/xterm" ]
 then
 	sudo apt install xterm
 fi
 
 # パッケージのリスト取得
-Dpkg=$(dpkg -l)
+Dpkg=$(LANG=C dpkg -l)
 
 # パッケージをインストール
 for _s1 in "${@}"
 do
-	_s2=$(echo "${Dpkg}" | grep " ${_s1} ")
+	# ok: "^ii  ${_s1} "
+	# NG: '^ii  ${_s1} '
+	_s2=$(echo "${Dpkg}" | grep -E "^ii  ${_s1} ")
 	if [ -z "${_s2}" ]
 	then
 		xterm \

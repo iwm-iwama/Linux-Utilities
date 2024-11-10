@@ -1,7 +1,7 @@
 #!/bin/dash
-# Ver.iwm20241108
+# Ver.iwm20241110
 
-iwm_SubPkgInstall "yad"
+##iwm_SubPkgInstall "yad"
 
 Title="Openbox ショートカットキー"
 

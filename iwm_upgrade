@@ -1,48 +1,63 @@
 #!/bin/dash
-# Ver.iwm20241108
+# Ver.iwm20241110
 
-List="${HOME}/iwm_installed-pkg.list"
+#----------------------------------------------------------------------
+echo "\033[97;44m dpkg --purge \033[97;45m Name \033[0m"
+echo
 
-CmdApt=$(cat <<-EOD
-	# 破損パッケージ修正
-	sudo dpkg --configure -a
-	sudo apt update
-	sudo apt upgrade
-	sudo apt dist-upgrade
-	sudo apt autoclean
-	sudo apt autoremove
-	# パッケージ一覧
-	dpkg --list | grep -E "^i" > "${List}"
-EOD
-)
+IFS=" "
 
-CmdDnf=$(cat <<-EOD
-	sudo dnf check-update
-	sudo dnf upgrade
-	sudo dnf autoremove
-	# パッケージ一覧
-	dnf list --installed | grep -i -E "^[A-Z]" > "${List}"
-EOD
-)
-
-Cmd=""
-if [ -n "$(which dnf)" ]
-then
-	Cmd="${CmdDnf}"
-else
-	Cmd="${CmdApt}"
-fi
-
-clear
-
-IFS="
-"
-for _s1 in $(echo "${Cmd}" | grep -i -E "[A-Z]")
+dpkg -l \
+| grep -E "^rm " \
+| while read Desired Name Version
 do
-	echo "\033[97;44m ${_s1} \033[0m"
-	eval "${_s1}"
+	echo "\033[97;45m ${Name} \033[0m"
+	sudo dpkg --purge ${Name}
 	echo
 done
 
+#----------------------------------------------------------------------
+_s1=$(
+cat <<-EOD
+	dpkg --configure -a
+	apt update
+	apt upgrade
+	apt dist-upgrade
+	apt autoclean
+	apt autoremove
+EOD
+)
+
+IFS="
+"
+
+for _s2 in $(echo "${_s1}")
+do
+	echo "\033[97;44m ${_s2} \033[0m"
+	# sudo
+	eval "sudo ${_s2}"
+	echo
+done
+
+#----------------------------------------------------------------------
+Olist="${HOME}/$(basename "$0").list"
+
+_s1=$(
+cat <<-EOD
+	dpkg -l | grep -E "^ii " > "${Olist}"
+EOD
+)
+
+IFS="
+"
+
+for _s2 in $(echo "${_s1}")
+do
+	echo "\033[97;44m ${_s2} \033[0m"
+	eval "${_s2}"
+	echo
+done
+
+#----------------------------------------------------------------------
 echo -n "(END)"
-read s1
+read _s1
