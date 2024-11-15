@@ -1,0 +1,29 @@
+#!/bin/dash
+# Ver.iwm20241111
+#--------------------------------------------------------------------------------
+# Windowsドライブを/media/${USER}/以下にマウント
+#--------------------------------------------------------------------------------
+
+# Tmpファイル作成
+TmpFn="./iwm_automount.tmp"
+echo "#!/bin/dash" > ${TmpFn}
+
+# デバイス情報抽出
+IFS=" "
+lsblk --raw -o PARTTYPENAME,LABEL,PATH \
+| grep -E "^Microsoft\\\\x20basic\\\\x20data" \
+| while read PARTTYPENAME LABEL PATH
+do
+	##echo "${PARTTYPENAME}|${LABEL}|${PATH}"
+	_s1="/media/${USER}/${LABEL}"
+	echo "sudo mkdir -v ${_s1} 2>/dev/null" >> ${TmpFn}
+	echo "sudo mount ${PATH} ${_s1} 2>/dev/null" >> ${TmpFn}
+done
+
+# 実行
+. ${TmpFn}
+
+# Tmpファイル削除
+rm "${TmpFn}"
+
+echo

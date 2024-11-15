@@ -1,23 +1,23 @@
 #!/bin/dash
-# Ver.iwm20241110
+# Ver.iwm20241112
 
 ##iwm_SubPkgInstall "yad"
 
 Title="Openbox ショートカットキー"
 
 Text=$(cat <<EOD
-<span face="sans" font-size="12pt" foreground="#f00">[音量]</span><span face="Monospace" font-size="11pt" foreground="#222">
-  [Ctrl]+[F1]          <span foreground="#fa0">On/Off</span>
-  [Ctrl]+[F2]          <span foreground="#f20">-2%</span>
-  [Ctrl]+[F3]          <span foreground="#f20">+2%</span>
-  [Ctrl]+[Shift]+[F2]  <span foreground="#fa0">-10%</span>
-  [Ctrl]+[Shift]+[F3]  <span foreground="#fa0">+10%</span>
+<span face="system-ui" font-size="12pt" foreground="#222"><span background="#f20" foreground="#fff"> 音量 </span>
+<span face="monospace" foreground="#f80">  On/Off  </span>[Ctrl]+[F1]
+<span face="monospace" foreground="#f22">  -2%     </span>[Ctrl]+[F2]
+<span face="monospace" foreground="#f22">  +2%     </span>[Ctrl]+[F3]
+<span face="monospace" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F2]
+<span face="monospace" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F3]
 </span>
-<span face="sans" font-size="12pt" foreground="#f00">[輝度]</span><span face="Monospace" font-size="11pt" foreground="#222">
-  [Ctrl]+[F5]          <span foreground="#f20">-2%</span>
-  [Ctrl]+[F6]          <span foreground="#f20">+2%</span>
-  [Ctrl]+[Shift]+[F5]  <span foreground="#fa0">-10%</span>
-  [Ctrl]+[Shift]+[F6]  <span foreground="#fa0">+10%</span>
+<span face="system-ui" font-size="12pt" foreground="#222"><span background="#f20" foreground="#fff"> 輝度 </span>
+<span face="monospace" foreground="#f22">  -2%     </span>[Ctrl]+[F5]
+<span face="monospace" foreground="#f22">  +2%     </span>[Ctrl]+[F6]
+<span face="monospace" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F5]
+<span face="monospace" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F6]
 </span>
 EOD
 )

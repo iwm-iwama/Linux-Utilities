@@ -3,7 +3,7 @@
 
 require "reline"
 
-VERSION = "iwm20241102"
+VERSION = "iwm20241112"
 TITLE   = "検索プロセスをkill"
 
 class ClassTerminal
@@ -35,22 +35,7 @@ class ClassTerminal
 end
 Term = ClassTerminal.new
 
-def RtnHashDirFile(
-	sIFn = ""
-)
-	a1 = /(.+[\\\/])*(.+?)$/.match(sIFn)[1..].to_a
-	i1 = 0
-	while i1 < a1.length
-		if a1[i1] == nil
-			a1[i1] = ""
-		end
-		i1 += 1
-	end
-	return { 'd' => a1[0], 'f' => a1[1] }
-end
-
 def SubHelp()
-	bn = RtnHashDirFile($0)['f']
 	print(
 		"\033[2G", "\033[93m(例１) \033[96mconky を含むプロセスを検索",
 		"\n",
@@ -78,23 +63,26 @@ class ClassProcess
 		seachKey
 	)
 		@aryProcess = []
-		return @aryProcess if seachKey.length == 0
+		if seachKey.length == 0
+			return @aryProcess
+		end
 		i1 = 0
-		%x(ps -A).split("\n").map{|_s1| _s1.strip}.each do |_s1|
+		%x(ps -A).split("\n").each do |_s1|
 			_a1 = _s1.split(" ")
-			if _a1[0] =~ /^[0-9]/
-				sPname = _a1[3..].join(" ")
-				# 大小区別しない
-				if sPname.match(/#{seachKey}/i)
-					i1 += 1
-					@aryProcess << [i1, _a1[0], sPname]
-				end
+			_cmd = _a1[3..].join(" ")
+			# 大小区別しない
+			if _cmd.match(/#{seachKey}/i)
+				i1 += 1
+				@aryProcess << [i1, _a1[0], _cmd]
 			end
 		end
 		return @aryProcess
 	end
 
 	def list()
+		if @aryProcess.length == 0
+			return
+		end
 		print(
 			"\033[93m",
 			"\033[3G", "ID",
@@ -104,7 +92,7 @@ class ClassProcess
 		)
 		@aryProcess.each do |_a1|
 		print(
-			"\033[93m", "\033[3G", _a1[0],
+			"\033[97m", "\033[3G", _a1[0],
 			"\033[37m", "\033[8G", _a1[1],
 			"\033[96m", "\033[15G", _a1[2],
 			"\n"
@@ -123,16 +111,22 @@ class ClassProcess
 	end
 
 	def kill(
-		aryProcess = []
+		aryProcess = nil
 	)
-		if aryProcess.length > 0
+		if aryProcess == nil
+			@aryProcess
+		elsif aryProcess.length > 0
 			@aryProcess = aryProcess
+		else
+			puts "該当 0 件"
+			return
 		end
+		puts "該当 #{@aryProcess.length} 件"
 		print "\033[95mkill \033[97m\033[45m Yes=1 \033[49m\n\033[95m?\033[97m "
 		if STDIN.gets.strip == "1"
 			print "\033[91m"
 			@aryProcess.each do |_a1|
-				##Kernel.puts _a1[1]
+				##Kernel.p _a1
 				system("kill #{_a1[1]}")
 			end
 		end
@@ -162,8 +156,8 @@ while true
 		end
 	end
 
+	puts "\033[95mkill \033[97m\033[41m 選択=ID1 ID2 ... \033[42m すべて選択=0 \033[44m 再検索=文字列 \033[49m"
 	while true
-		puts "\033[95mkill \033[97m\033[41m 選択=ID1 ID2 ... \033[42m すべて選択=0 \033[44m 再検索=文字列 \033[49m"
 		aKey = Process.readline.split(" ")
 		if aKey.length == 0
 			next
