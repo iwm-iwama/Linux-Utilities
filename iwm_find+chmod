@@ -1,10 +1,10 @@
 #!/bin/dash
-# Ver.iwm20230406
+# Ver.iwm20241118
 
 # 引数チェック
-if [ $# -lt 2 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]
+if [ $# -lt 2 ] || [ "${1}" = "--help" ] || [ "${1}" = "-h" ]
 then
-	bn=$(basename "$0")
+	bn=$(basename "${0}")
 	echo "\033[38;2;255;255;255m\033[104m 検索したファイルのアクセス権を一括変更 \033[0m"
 	echo "    \033[38;2;255;255;255m${bn} \033[38;2;255;150;150m[Dir] \033[38;2;150;150;255m[Regex] \033[38;2;0;150;255m[Chmod]"
 	echo
@@ -14,16 +14,16 @@ then
 	exit
 fi
 
-for _s1 in $(find "$1" -type f | grep -i -E "$2")
+for _s1 in $(find "${1}" -type f | grep -i -E "${2}")
 do
-	if [ -n "$3" ]
+	if [ -n "${3}" ]
 	then
-		chmod "$3" "${_s1}"
+		chmod "${3}" "${_s1}"
 		ls -la "${_s1}"
 	fi
 done
 # 上記、
-#   find "$1" -type f | grep -i -E "$2" | xargs chmod "$3"
+#   find "${1}" -type f | grep -i -E "${2}" | xargs chmod "${3}"
 # と同等
 
 echo "\033[0m"

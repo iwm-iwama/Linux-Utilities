@@ -1,8 +1,9 @@
 #!/bin/dash
+# Ver.iwm20241118
 
 # openbox
 # xfce
-case "$DESKTOP_SESSION" in
+case "${DESKTOP_SESSION}" in
 	"openbox")
 		openbox --exit
 		;;

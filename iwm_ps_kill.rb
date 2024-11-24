@@ -3,7 +3,7 @@
 
 require "reline"
 
-VERSION = "iwm20241112"
+VERSION = "iwm20241120"
 TITLE   = "検索プロセスをkill"
 
 class ClassTerminal
@@ -67,9 +67,9 @@ class ClassProcess
 			return @aryProcess
 		end
 		i1 = 0
-		%x(ps -A).split("\n").each do |_s1|
+		%x(ps -Ao pid,comm).split("\n").each do |_s1|
 			_a1 = _s1.split(" ")
-			_cmd = _a1[3..].join(" ")
+			_cmd = _a1[1..].join(" ")
 			# 大小区別しない
 			if _cmd.match(/#{seachKey}/i)
 				i1 += 1

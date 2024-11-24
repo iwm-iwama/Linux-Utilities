@@ -1,32 +1,37 @@
 #!/bin/dash
-# Ver.iwm20241112
+# Ver.iwm20241121
 
 ##iwm_SubPkgInstall "yad"
 
 Title="Openbox ショートカットキー"
 
-Text=$(cat <<EOD
-<span face="system-ui" font-size="12pt" foreground="#222"><span background="#f20" foreground="#fff"> 音量 </span>
-<span face="monospace" foreground="#f80">  On/Off  </span>[Ctrl]+[F1]
-<span face="monospace" foreground="#f22">  -2%     </span>[Ctrl]+[F2]
-<span face="monospace" foreground="#f22">  +2%     </span>[Ctrl]+[F3]
-<span face="monospace" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F2]
-<span face="monospace" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F3]
-</span>
-<span face="system-ui" font-size="12pt" foreground="#222"><span background="#f20" foreground="#fff"> 輝度 </span>
-<span face="monospace" foreground="#f22">  -2%     </span>[Ctrl]+[F5]
-<span face="monospace" foreground="#f22">  +2%     </span>[Ctrl]+[F6]
-<span face="monospace" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F5]
-<span face="monospace" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F6]
-</span>
+# コードを読みやすくするため <br> 要素を仮実装
+Text=$(cat <<-EOD
+<big>
+	<span face="sans">
+		<span background="#f20" foreground="#fff"> 音量 </span><br>
+		<span face="mono" foreground="#f80">  On/Off  </span>[Ctrl]+[F1]<br>
+		<span face="mono" foreground="#f22">  -2%     </span>[Ctrl]+[F2]<br>
+		<span face="mono" foreground="#f22">  +2%     </span>[Ctrl]+[F3]<br>
+		<span face="mono" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F2]<br>
+		<span face="mono" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F3]<br>
+		<br>
+		<span background="#f20" foreground="#fff"> 輝度 </span><br>
+		<span face="mono" foreground="#f22">  -2%     </span>[Ctrl]+[F5]<br>
+		<span face="mono" foreground="#f22">  +2%     </span>[Ctrl]+[F6]<br>
+		<span face="mono" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F5]<br>
+		<span face="mono" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F6]<br>
+	</span>
+</big>
 EOD
 )
+Text=$(echo "$Text" | tr -d "\n" | sed -e "s/<br>/\\\\n/ig")
 
 yad \
 	--title="${Title}" \
 	--text="${Text}" \
-	--button="gtk-close:0" \
-	--width="300" \
+	--button="close!gtk-close:0" \
+	--width="320" \
 	--fixed \
 	--center \
 	--on-top \

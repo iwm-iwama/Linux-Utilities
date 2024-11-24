@@ -1,24 +1,24 @@
 #!/bin/dash
-# Ver.iwm20241101
+# Ver.iwm20241118
 
 # 入力履歴消去
-find ${HOME} -name "*_history*" | xargs rm -rf
+find "${HOME}" -name "*_history*" | xargs rm -rf
 
 # su -
 ## iwm_sudo true
 
 # 以下
 # lsコマンドでは "Dir/File" のような表示ができないので  findコマンドを使用
-CMD="find /var/log 2>/dev/null"
+Cmd="find /var/log 2>/dev/null"
 
 # ６世代以上のログを削除
-GEN="([6-9]|[1-9][0-9])"
+Gen="([6-9]|[1-9][0-9])"
 
 # '.NUM.gz'（NUM>=6）で終わるとき
-eval ${CMD} | grep -E '\.${GEN}\.gz$' | sudo xargs rm -f
+eval ${Cmd} | grep -E '\.${Gen}\.gz$' | sudo xargs rm -f
 
 # '.log.NUM'（NUM>=6）で終わるとき
-eval ${CMD} | grep -E '\.log\.${GEN}$' | sudo xargs rm -f
+eval ${Cmd} | grep -E '\.log\.${Gen}$' | sudo xargs rm -f
 
 # Shutdown
 systemctl poweroff

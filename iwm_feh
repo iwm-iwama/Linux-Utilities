@@ -1,14 +1,14 @@
 #!/bin/dash
-# Ver.iwm20241108
+# Ver.iwm20241118
 
 iwm_SubPkgInstall "feh" "yad"
 
 Title="壁紙変更"
 
-#------------------------------------------
+#--------------------------------------------
 # RtnSelectImage
-#   $1 = 壁紙のファイル名 (例) ~/bg01.jpg
-#------------------------------------------
+#   ${1} = 壁紙のファイル名 (例) ~/bg01.jpg
+#--------------------------------------------
 RtnSelectImage()
 {
 	_fn="${1}"
@@ -40,7 +40,7 @@ readonly CbList="center|fill|scale|tile"
 
 #----------------------------------
 # RtnSelectBgStyle
-#   $1 = 壁紙の配置方法 (例) fill
+#   ${1} = 壁紙の配置方法 (例) fill
 #----------------------------------
 RtnSelectBgStyle()
 {
@@ -73,15 +73,15 @@ RtnSelectBgStyle()
 RtnDialogYN()
 {
 	yad \
-		--image="dialog-question" \
-		--text "確定しますか ?\n" \
+		--image="/usr/share/icons/gnome/24x24/status/dialog-question.png" \
+		--text "確定しますか ?" \
 		--title="${Title}" \
 		--fixed \
 		--center \
 		--on-top \
  		2>/dev/null
 
-	if [ "${?}" = "0" ]
+	if [ "$?" = "0" ]
 	then
 		echo ""
 	else

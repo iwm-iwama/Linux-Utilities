@@ -1,0 +1,37 @@
+#!/bin/dash
+# Ver.iwm20241121
+
+# オリジナルは sparky-dashboard
+# 主な変更点は以下のとおり
+# ・#!/bin/bash から #!/bin/dash に変更
+# ・複数起動を禁止
+
+ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "${0}"))
+##echo "${ThisPS}"
+##echo "$(echo "${ThisPS}" | wc -l)"
+
+if [ "$(echo "${ThisPS}" | wc -l)" -gt "1" ]
+then
+	exit
+fi
+
+TmpDir="/tmp/sparky-dash"
+
+if [ -d "${TmpDir}" ]
+then
+	rm -rf "${TmpDir}"
+fi
+
+mkdir "${TmpDir}"
+cp -a /usr/share/applications/*.desktop "${TmpDir}/"
+
+cd "${TmpDir}"
+
+find * -type f -exec grep -l 'NoDisplay=true' {} \; | xargs rm -f
+
+yad --icons --read-dir="${TmpDir}" --monitor --item-width=100 \
+	--sort-by-name --center --undecorated --skip-taskbar --borders=20 \
+	--button="Close!gtk-close":1 --buttons-layout=center --maximized \
+	2>/dev/null
+
+rm -rf "${TmpDir}"
