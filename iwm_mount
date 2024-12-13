@@ -1,0 +1,77 @@
+#!/bin/dash
+# Ver.iwm20241205
+#--------------------------------------------------------------------------------
+# デバイスをマウント／アンマウント
+#--------------------------------------------------------------------------------
+readonly TmpFn="./$$.tmp"
+
+lsblk -n --raw -o FSTYPE,PATH,MOUNTPOINTS,LABEL,NAME \
+| sed -e "s/ /,/g" \
+| grep -v "^," \
+| sort \
+| while IFS="," read _FSTYPE _PATH _MOUNTPOINTS _LABEL _NAME
+do
+	if [ "${_MOUNTPOINTS}" != "/" ]
+	then
+		_lbl=""
+		if [ -z "${_LABEL}" ]
+		then
+			_lbl="${_NAME}"
+		else
+			_lbl="${_LABEL}"
+		fi
+
+		_mntp=""
+		if [ -z "${_MOUNTPOINTS}" ]
+		then
+			_mntp="FALSE"
+		else
+			_mntp="TRUE"
+		fi
+
+		echo "${_mntp},${_FSTYPE},${_NAME},${_lbl}" >> "${TmpFn}"
+	fi
+done
+
+readonly TmpList=$(cat "${TmpFn}")
+rm "${TmpFn}"
+
+readonly Mnt="/media/$USER"
+readonly Dev="/dev"
+
+readonly List=$( \
+	echo "${TmpList}" \
+	| sed -e "s/,/\\n/g" \
+	| yad \
+		--list --checklist \
+		--column="On" --column="FS" --column="${Dev}" --column="${Mnt}" \
+		--print-all --separator="," \
+		--title="デバイスのマウント" \
+		--height="400" --width="480" --fixed \
+		--on-top --center \
+		2>/dev/null \
+	| sed -e "s/,$//g" \
+)
+
+if [ -z "${List}" ] || [ "${List}" = "${TmpList}" ]
+then
+	exit
+fi
+
+pkexec echo "${List}" \
+| while IFS="," read _Chk _2 _Dev _Mnt
+do
+	_Mnt="${Mnt}/${_Mnt}"
+	_Dev="${Dev}/${_Dev}"
+
+	if [ "${_Chk}" = "TRUE" ]
+	then
+		##echo "mkdir -v ${_Mnt}"
+		sudo mkdir -v ${_Mnt} 2>/dev/null
+		##echo "mount ${_Dev} ${_Mnt}"
+		sudo mount ${_Dev} ${_Mnt} 2>/dev/null
+	else
+		##echo "umount ${_Dev}"
+		sudo umount ${_Dev} 2>/dev/null
+	fi
+done

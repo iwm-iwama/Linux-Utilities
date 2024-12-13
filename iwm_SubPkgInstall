@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241109
+# Ver.iwm20241212
 #--------------------------------------------------------------------------------
 # 使用例（"pv" "yad" をインストール）
 #   dash: iwm_SubPkgInstall "pv" "yad"
@@ -13,20 +13,20 @@ then
 fi
 
 # パッケージのリスト取得
-Dpkg=$(LANG=C dpkg -l)
+readonly Dpkg=$(LANG=C dpkg -l)
 
 # パッケージをインストール
-for _s1 in "${@}"
+for _1 in "${@}"
 do
-	# ok: "^ii  ${_s1} "
-	# NG: '^ii  ${_s1} '
-	_s2=$(echo "${Dpkg}" | grep -E "^ii  ${_s1} ")
-	if [ -z "${_s2}" ]
+	# ok: "^ii  ${_1} "
+	# NG: '^ii  ${_1} '
+	_2=$(echo "${Dpkg}" | grep -E "^ii  ${_1} ")
+	if [ -z "${_2}" ]
 	then
 		xterm \
 			-geometry "60x20" \
-			-title "${_s1} をインストール" \
+			-title "${_1} をインストール" \
 			-fa "Liberation Mono:size=11:antialias=true" \
-			-e "sudo apt install ${_s1};"
+			-e "sudo apt install ${_1};"
 	fi
 done

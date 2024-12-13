@@ -1,13 +1,13 @@
 #!/bin/dash
-# Ver.iwm20230304
+# Ver.iwm20241212
 
-Pid=$(pgrep -x "conky")
+readonly Pid=$(pgrep -x "conky")
 if [ ${#Pid} = 0 ]
 then
 	conky & 2>/dev/null
 else
-	for _s1 in "${Pid}"
+	for _1 in "${Pid}"
 	do
-		kill "${_s1}"
+		kill "${_1}"
 	done
 fi

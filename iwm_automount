@@ -1,29 +1,42 @@
 #!/bin/dash
-# Ver.iwm20241118
+# Ver.iwm20241205
 #--------------------------------------------------------------------------------
-# Windowsドライブを/media/${USER}/以下にマウント
+# デバイスを /media/$USER/以下 にマウント
 #--------------------------------------------------------------------------------
+readonly Bn=$(basename "$0")
 
-# Tmpファイル作成
-TmpFn="./iwm_automount.tmp"
-echo "#!/bin/dash" > ${TmpFn}
+# Tmp
+readonly TmpFn="$HOME/${Bn}.tmp"
+	echo "#!/bin/dash" > "${TmpFn}"
 
-# デバイス情報抽出
-IFS=" "
-lsblk --raw -o PARTTYPENAME,LABEL,PATH \
-| grep -E "^Microsoft\\\\x20basic\\\\x20data" \
-| while read PARTTYPENAME LABEL PATH
+readonly Dev="/dev"
+readonly Mnt="/media/$USER"
+
+# "マウントされていない" "ntfs" "ext4" デバイス
+lsblk --raw -o FSTYPE,MOUNTPOINTS,LABEL,NAME \
+| sed -e "s/ /,/g" \
+| grep -E "^(ext4|ntfs),," \
+| while IFS="," read _FSTYPE _MOUNTPOINTS _LABEL _NAME
 do
-	##echo "${PARTTYPENAME}|${LABEL}|${PATH}"
-	_s1="/media/${USER}/${LABEL}"
-	echo "sudo mkdir -v ${_s1} 2>/dev/null" >> ${TmpFn}
-	echo "sudo mount ${PATH} ${_s1} 2>/dev/null" >> ${TmpFn}
+	##echo "${_FSTYPE},${_MOUNTPOINTS},${_LABEL},${_NAME}"
+	_lbl=""
+	if [ -z "${_LABEL}" ]
+	then
+		_lbl="${_NAME}"
+	else
+		_lbl="${_LABEL}"
+	fi
+
+	_dev="${Dev}/${_NAME}"
+	_mnt="${Mnt}/${_lbl}"
+
+	# Tmp
+	echo "sudo mkdir -v ${_mnt} 2>/dev/null" >> "${TmpFn}"
+	echo "sudo mount ${_dev} ${_mnt} 2>/dev/null" >> "${TmpFn}"
 done
 
 # 実行
-. ${TmpFn}
+##cat "${TmpFn}"
+. "${TmpFn}"
 
-# Tmpファイル削除
 rm "${TmpFn}"
-
-echo

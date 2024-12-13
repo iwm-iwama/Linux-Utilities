@@ -1,8 +1,8 @@
 #!/bin/dash
-# Ver.iwm20241015
+# Ver.iwm20241204
 
 # (例) "Mono: Playback 46 [62%] [-28.00dB] [on]"
-readonly MuteOn=$(amixer sget Master | grep ' \[on\]$')
+readonly MuteOn=$(amixer sget Master | grep -E " \[on\]$")
 
 if [ -z "${MuteOn}" ]
 then

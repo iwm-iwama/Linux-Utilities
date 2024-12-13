@@ -1,38 +1,35 @@
 #!/bin/dash
-# Ver.iwm20241121
+# Ver.iwm20241205
+# 基本設定は $HOME/.config/openbox/rc.xml
 
 ##iwm_SubPkgInstall "yad"
 
-Title="Openbox ショートカットキー"
-
-# コードを読みやすくするため <br> 要素を仮実装
+# 読みやすくするため <br> 要素を仮実装
 Text=$(cat <<-EOD
 <big>
 	<span face="sans">
 		<span background="#f20" foreground="#fff"> 音量 </span><br>
-		<span face="mono" foreground="#f80">  On/Off  </span>[Ctrl]+[F1]<br>
-		<span face="mono" foreground="#f22">  -2%     </span>[Ctrl]+[F2]<br>
-		<span face="mono" foreground="#f22">  +2%     </span>[Ctrl]+[F3]<br>
-		<span face="mono" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F2]<br>
-		<span face="mono" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F3]<br>
+		<span face="mono" foreground="#f20">  On/Off  </span>[Ctrl]+[F1]<br>
+		<span face="mono" foreground="#f40">  -5%     </span>[Ctrl]+[F2]<br>
+		<span face="mono" foreground="#f40">  +5%     </span>[Ctrl]+[F3]<br>
+		<span face="mono" foreground="#f60">  -1%     </span>[Shift]+[F2]<br>
+		<span face="mono" foreground="#f60">  +1%     </span>[Shift]+[F3]<br>
 		<br>
 		<span background="#f20" foreground="#fff"> 輝度 </span><br>
-		<span face="mono" foreground="#f22">  -2%     </span>[Ctrl]+[F5]<br>
-		<span face="mono" foreground="#f22">  +2%     </span>[Ctrl]+[F6]<br>
-		<span face="mono" foreground="#f80">  -10%    </span>[Ctrl]+[Shift]+[F5]<br>
-		<span face="mono" foreground="#f80">  +10%    </span>[Ctrl]+[Shift]+[F6]<br>
+		<span face="mono" foreground="#f40">  -10%    </span>[Ctrl]+[F5]<br>
+		<span face="mono" foreground="#f40">  +10%    </span>[Ctrl]+[F6]<br>
+		<span face="mono" foreground="#f60">  -2%     </span>[Shift]+[F5]<br>
+		<span face="mono" foreground="#f60">  +2%     </span>[Shift]+[F6]<br>
 	</span>
 </big>
 EOD
 )
-Text=$(echo "$Text" | tr -d "\n" | sed -e "s/<br>/\\\\n/ig")
+Text=$(echo "${Text}" | tr -d "\n" | sed -e "s/<br>/\\n/ig")
 
 yad \
-	--title="${Title}" \
 	--text="${Text}" \
 	--button="close!gtk-close:0" \
-	--width="320" \
-	--fixed \
-	--center \
-	--on-top \
+	--title="Openbox ショートカットキー" \
+	--width="320" --fixed \
+	--on-top --center \
 	2>/dev/null
