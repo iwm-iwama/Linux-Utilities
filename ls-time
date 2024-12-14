@@ -1,4 +1,0 @@
-#!/bin/dash
-# Ver.iwm20241029
-
-ls -la --time-style=+'%Y/%m/%d_%H:%M:%S' $*
