@@ -1,0 +1,53 @@
+#!/bin/dash
+# Ver.iwm20241220
+
+# $HOME/.config/openbox/autostart
+# への追記を想定
+
+readonly ObFile=$( \
+cat <<-EOD
+	rc.xml
+	menu.xml
+	autostart
+EOD
+)
+
+ObArgv=""
+
+IFS="
+"
+for _1 in $(echo "${ObFile}")
+do
+	ObArgv="${ObArgv} $HOME/.config/openbox/${_1}"
+done
+
+# Label ! Command ! Icon
+readonly Menu=$( \
+cat <<-EOD
+	obconf ! obconf ! obconf
+	Edit Openbox ! mousepad ${ObArgv} ! mousepad
+	openbox --restart ! openbox --restart ! gtk-refresh
+	tint2conf ! tint2conf ! tint2conf
+	Wallpaper ! iwm_feh ! feh
+EOD
+)
+
+# 変換後のフォーマット
+# "Openbox!obconf!obconf|Openbox Restart!openbox --restart!gtk-refresh|tint2!tint2conf!tint2conf|Wallpaper!iwm_feh!feh"
+readonly MenuArgv=$( \
+	echo "${Menu}" \
+	| sed -E "s/(^\s+|\s+$)//g" \
+	| sed -E "s/(.+)/\1\|/g" \
+	| tr -d "\n" \
+	| sed -E "s/\s+\!\s+/\!/g" \
+	| sed -E "s/\|$//g" \
+)
+
+# 通知エリアに常駐
+yad \
+	--notification --image="gtk-execute" \
+	--command="iwm_openbox-shortcut-keys" \
+	--menu="${MenuArgv}" \
+	--text="Openbox and other settings menus" \
+	--on-top --center \
+	2>/dev/null

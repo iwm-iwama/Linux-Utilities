@@ -1,21 +1,23 @@
 #!/bin/dash
-# Ver.iwm20241205
-# 基本設定は $HOME/.config/openbox/rc.xml
+# Ver.iwm20241220
+
+# 基本設定は $HOME/.config/openbox/rc.xml に依存
 
 ##iwm_SubPkgInstall "yad"
 
 # 読みやすくするため <br> 要素を仮実装
-Text=$(cat <<-EOD
+Text=$( \
+cat <<-EOD
 <big>
 	<span face="sans">
-		<span background="#f20" foreground="#fff"> 音量 </span><br>
+		<span foreground="#fb0"> 音量 </span><br>
 		<span face="mono" foreground="#f20">  On/Off  </span>[Ctrl]+[F1]<br>
 		<span face="mono" foreground="#f40">  -5%     </span>[Ctrl]+[F2]<br>
 		<span face="mono" foreground="#f40">  +5%     </span>[Ctrl]+[F3]<br>
 		<span face="mono" foreground="#f60">  -1%     </span>[Shift]+[F2]<br>
 		<span face="mono" foreground="#f60">  +1%     </span>[Shift]+[F3]<br>
 		<br>
-		<span background="#f20" foreground="#fff"> 輝度 </span><br>
+		<span foreground="#fb0"> 輝度 </span><br>
 		<span face="mono" foreground="#f40">  -10%    </span>[Ctrl]+[F5]<br>
 		<span face="mono" foreground="#f40">  +10%    </span>[Ctrl]+[F6]<br>
 		<span face="mono" foreground="#f60">  -2%     </span>[Shift]+[F5]<br>
@@ -24,11 +26,17 @@ Text=$(cat <<-EOD
 </big>
 EOD
 )
-Text=$(echo "${Text}" | tr -d "\n" | sed -e "s/<br>/\\n/ig")
+
+Text=$( \
+	echo "${Text}" \
+	| sed -E "s/(^\s+|\s+$)//g" \
+	| tr -d "\n" \
+	| sed -e "s/<br>/\\n/ig" \
+)
 
 yad \
 	--text="${Text}" \
-	--button="close!gtk-close:0" \
+	--button="close!" \
 	--title="Openbox ショートカットキー" \
 	--width="320" --fixed \
 	--on-top --center \

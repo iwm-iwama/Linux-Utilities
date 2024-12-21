@@ -2,6 +2,7 @@
 # Ver.iwm20241212
 
 readonly Pid=$(pgrep -x "conky")
+
 if [ ${#Pid} = 0 ]
 then
 	conky & 2>/dev/null

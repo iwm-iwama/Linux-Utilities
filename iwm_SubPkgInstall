@@ -1,10 +1,34 @@
 #!/bin/dash
-# Ver.iwm20241212
+# Ver.iwm20241220
 #--------------------------------------------------------------------------------
 # 使用例（"pv" "yad" をインストール）
 #   dash: iwm_SubPkgInstall "pv" "yad"
 #   ruby: %x(iwm_SubPkgInstall "pv" "yad")
 #--------------------------------------------------------------------------------
+
+# 引数なしのとき
+if [ "$#" = "0" ]
+then
+	exit
+fi
+
+#
+Cnt="0"
+
+for _1 in "$@"
+do
+	_2=$(which "${_1}")
+	if [ -z "${_2}" ]
+	then
+		Cnt="1"
+		break
+	fi
+done
+
+if [ "${Cnt}" = "0" ]
+then
+	exit
+fi
 
 # xterm をインストール
 if [ ! -f "/usr/bin/xterm" ]
@@ -13,20 +37,25 @@ then
 fi
 
 # パッケージのリスト取得
-readonly Dpkg=$(LANG=C dpkg -l)
+readonly DpkgList=$( \
+	LANG=C dpkg -l \
+	| grep -e "^ii" \
+	| while IFS=" " read _Status _Name _3
+	do
+		echo "${_Name}"
+	done
+)
 
 # パッケージをインストール
-for _1 in "${@}"
+for _1 in "$@"
 do
-	# ok: "^ii  ${_1} "
-	# NG: '^ii  ${_1} '
-	_2=$(echo "${Dpkg}" | grep -E "^ii  ${_1} ")
+	_2=$(echo "${DpkgList}" | grep -x "${_1}")
 	if [ -z "${_2}" ]
 	then
 		xterm \
-			-geometry "60x20" \
+			-geometry "80x30+50+50" \
 			-title "${_1} をインストール" \
-			-fa "Liberation Mono:size=11:antialias=true" \
-			-e "sudo apt install ${_1};"
+			-fa "Noto Mono:size=11:antialias=true" \
+			-e "sudo apt install ${_1}"
 	fi
 done
