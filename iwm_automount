@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241205
+# Ver.iwm20241221
 #--------------------------------------------------------------------------------
 # デバイスを /media/$USER/以下 にマウント
 #--------------------------------------------------------------------------------
@@ -20,12 +20,9 @@ lsblk --raw -o FSTYPE,MOUNTPOINTS,LABEL,NAME \
 do
 	##echo "${_FSTYPE},${_MOUNTPOINTS},${_LABEL},${_NAME}"
 	_lbl=""
-	if [ -z "${_LABEL}" ]
-	then
-		_lbl="${_NAME}"
-	else
-		_lbl="${_LABEL}"
-	fi
+	[ -n "${_LABEL}" ] \
+		&& _lbl="${_LABEL}" \
+		|| _lbl="${_NAME}"
 
 	_dev="${Dev}/${_NAME}"
 	_mnt="${Mnt}/${_lbl}"

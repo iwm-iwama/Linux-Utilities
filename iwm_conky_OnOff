@@ -1,14 +1,6 @@
 #!/bin/dash
-# Ver.iwm20241212
+# Ver.iwm20241221
 
-readonly Pid=$(pgrep -x "conky")
-
-if [ ${#Pid} = 0 ]
-then
-	conky & 2>/dev/null
-else
-	for _1 in "${Pid}"
-	do
-		kill "${_1}"
-	done
-fi
+[ -n "$(pgrep -x conky)" ] \
+	&& killall conky \
+	|| conky & 2>/dev/null

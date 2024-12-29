@@ -1,0 +1,57 @@
+#!/bin/dash
+# Ver.iwm20241229
+
+Sec=$(date +%s)
+
+readonly DiffTmFormat=" %5s %-7s"
+
+LANG=C ls -lah -tr --time-style=+'%Y/%m/%d %H:%M:%S' "$@" \
+| while IFS=" " read _1 _2 _3 _4 _5 _6 _7 _8
+do
+	case "${_1}" in
+		.*)
+			echo "\033[45;97m${_1}:\033[0m"
+			;;
+		-*)
+			_sec=$(date -d "${_6} ${_7}" +%s)
+				_S=$((Sec - _sec))
+				_M=$((_S / 60))
+				_H=$((_M / 60))
+				_D=$((_H / 24))
+
+			if [ ${_D} -gt 0 ]
+			then
+				[ ${_D} -gt 1 ] \
+					&& printf "\033[38;2;0;200;240m${DiffTmFormat}" "${_D}" "days" \
+					|| printf "\033[38;2;0;200;240m${DiffTmFormat}" "${_D}" "day"
+
+			elif [ ${_H} -gt 0 ]
+			then
+				[ ${_H} -gt 1 ] \
+					&& printf "\033[38;2;240;0;200m${DiffTmFormat}" "${_H}" "hours" \
+					|| printf "\033[38;2;240;0;200m${DiffTmFormat}" "${_H}" "hour"
+
+			elif [ ${_M} -gt 0 ]
+			then
+				[ ${_M} -gt 1 ] \
+					&& printf "\033[38;2;240;200;0m${DiffTmFormat}" "${_M}" "minutes" \
+					|| printf "\033[38;2;240;200;0m${DiffTmFormat}" "${_M}" "minute"
+
+			elif [ ${_S} -gt 0 ]
+			then
+				[ ${_S} -gt 1 ] \
+					&& printf "\033[38;2;240;240;0m${DiffTmFormat}" "${_S}" "seconds" \
+					|| printf "\033[38;2;240;240;0m${DiffTmFormat}" "${_S}" "second"
+
+			else
+				printf "\033[38;2;190;0;0m${DiffTmFormat}" "?" "future"
+			fi
+
+			[ "$(echo ${_1} | grep 'x')" ] \
+				&& printf "  ${_6} ${_7} \033[94m %5s \033[92m ${_8}\033[0m\n" "${_5}" \
+				|| printf "  ${_6} ${_7} \033[94m %5s \033[97m ${_8}\033[0m\n" "${_5}"
+			;;
+		*)
+			;;
+	esac
+done

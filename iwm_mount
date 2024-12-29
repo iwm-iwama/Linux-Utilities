@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241205
+# Ver.iwm20241222
 #--------------------------------------------------------------------------------
 # デバイスをマウント／アンマウント
 #--------------------------------------------------------------------------------
@@ -14,20 +14,14 @@ do
 	if [ "${_MOUNTPOINTS}" != "/" ]
 	then
 		_lbl=""
-		if [ -z "${_LABEL}" ]
-		then
-			_lbl="${_NAME}"
-		else
-			_lbl="${_LABEL}"
-		fi
+		[ -n "${_LABEL}" ] \
+			&& _lbl="${_LABEL}" \
+			|| _lbl="${_NAME}"
 
 		_mntp=""
-		if [ -z "${_MOUNTPOINTS}" ]
-		then
-			_mntp="FALSE"
-		else
-			_mntp="TRUE"
-		fi
+		[ -n "${_MOUNTPOINTS}" ] \
+			&& _mntp="TRUE" \
+			|| _mntp="FALSE"
 
 		echo "${_mntp},${_FSTYPE},${_NAME},${_lbl}" >> "${TmpFn}"
 	fi
@@ -50,7 +44,6 @@ readonly List=$( \
 		--height="400" --width="480" --fixed \
 		--on-top --center \
 		2>/dev/null \
-	| sed -e "s/,$//g" \
 )
 
 if [ -z "${List}" ] || [ "${List}" = "${TmpList}" ]

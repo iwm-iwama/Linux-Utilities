@@ -1,9 +1,55 @@
 #!/bin/dash
-# Ver.iwm20241212
+# Ver.iwm20241229
 
-ls -lah -tr --time-style=+'%Y/%m/%d %H:%M:%S' $* \
-| grep -e '^-' \
+Sec=$(date +%s)
+
+DiffTm=""
+
+LANG=C ls -lah -tr --time-style=+'%Y/%m/%d %H:%M:%S' "$@" \
 | while IFS=" " read _1 _2 _3 _4 _5 _6 _7 _8
 do
-	echo "\033[37m${_1} ${_3} ${_4} \033[93m${_6} ${_7} \033[92m${_8}\033[0m"
+	case "${_1}" in
+		.*)
+			echo "${_1}:"
+			;;
+		-*)
+			_sec=$(date -d "${_6} ${_7}" +%s)
+				_S=$((Sec - _sec))
+				_M=$((_S / 60))
+				_H=$((_M / 60))
+				_D=$((_H / 24))
+
+			if [ ${_D} -gt 0 ]
+			then
+				[ ${_D} -gt 1 ] \
+					&& DiffTm="${_D} days" \
+					|| DiffTm="${_D} day"
+
+			elif [ ${_H} -gt 0 ]
+			then
+				[ ${_H} -gt 1 ] \
+					&& DiffTm="${_H} hours" \
+					|| DiffTm="${_H} hour"
+
+			elif [ ${_M} -gt 0 ]
+			then
+				[ ${_M} -gt 1 ] \
+					&& DiffTm="${_M} minutes" \
+					|| DiffTm="${_M} minute"
+
+			elif [ ${_S} -gt 0 ]
+			then
+				[ ${_S} -gt 1 ] \
+					&& DiffTm="${_S} seconds" \
+					|| DiffTm="${_S} second"
+
+			else
+				DiffTm="? future"
+			fi
+
+			printf " %5s %-7s  ${_6} ${_7}  %5s  ${_8}\n" ${DiffTm} "${_5}"
+			;;
+		*)
+			;;
+	esac
 done

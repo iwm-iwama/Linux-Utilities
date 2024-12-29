@@ -1,12 +1,12 @@
 #!/bin/dash
-# Ver.iwm20241204
+# Ver.iwm20241229
 
-# (例) "Mono: Playback 46 [62%] [-28.00dB] [on]"
-readonly MuteOn=$(amixer sget Master | grep -E " \[on\]$")
+# ALSA
+#	[ $(amixer sget Master | grep -E ' \[on\]$')" ] \
+#		&& amixer sset Master off \
+#		|| amixer sset Master on
 
-if [ -z "${MuteOn}" ]
-then
-	amixer sset Master on
-else
-	amixer sset Master off
-fi
+# PulseAudio
+[ "$(LANG=C pactl get-sink-mute @DEFAULT_SINK@ | grep 'Mute: no')" ] \
+	&& pactl set-sink-mute @DEFAULT_SINK@ 1 \
+	|| pactl set-sink-mute @DEFAULT_SINK@ 0

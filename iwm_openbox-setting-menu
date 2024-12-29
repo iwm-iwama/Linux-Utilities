@@ -1,8 +1,9 @@
 #!/bin/dash
-# Ver.iwm20241220
+# Ver.iwm20241222
 
-# $HOME/.config/openbox/autostart
-# への追記を想定
+# 以下の使用を想定
+#   Openbox + tint2
+#   $HOME/.config/openbox/autostart から起動
 
 readonly ObFile=$( \
 cat <<-EOD
@@ -25,22 +26,24 @@ done
 readonly Menu=$( \
 cat <<-EOD
 	obconf ! obconf ! obconf
-	Edit Openbox ! mousepad ${ObArgv} ! mousepad
 	openbox --restart ! openbox --restart ! gtk-refresh
+	Edit Openbox ! mousepad ${ObArgv} ! mousepad
 	tint2conf ! tint2conf ! tint2conf
 	Wallpaper ! iwm_feh ! feh
 EOD
 )
 
 # 変換後のフォーマット
-# "Openbox!obconf!obconf|Openbox Restart!openbox --restart!gtk-refresh|tint2!tint2conf!tint2conf|Wallpaper!iwm_feh!feh"
+# "Openbox!obconf!obconf|Openbox Restart!openbox --restart!gtk-refresh|tint2!tint2conf!tint2conf|Wallpaper!iwm_feh!feh|"
 readonly MenuArgv=$( \
 	echo "${Menu}" \
-	| sed -E "s/(^\s+|\s+$)//g" \
-	| sed -E "s/(.+)/\1\|/g" \
-	| tr -d "\n" \
-	| sed -E "s/\s+\!\s+/\!/g" \
-	| sed -E "s/\|$//g" \
+	| mawk \
+	'$0 {
+		sub(/^[[:blank:]]+/, "")
+		sub(/[[:blank:]]+$/, "")
+		gsub(/[[:blank:]]*\![[:blank:]]*/, "!")
+		printf("%s|", $0)
+	}'
 )
 
 # 通知エリアに常駐

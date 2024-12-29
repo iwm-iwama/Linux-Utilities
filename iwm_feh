@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241205
+# Ver.iwm20241221
 
 iwm_SubPkgInstall "feh" "yad"
 
@@ -13,10 +13,7 @@ RtnSelectImage()
 {
 	_fn="$1"
 
-	if [ -z "${_fn}" ]
-	then
-		_fn="$HOME"
-	fi
+	[ -z "${_fn}" ] && _fn="$HOME"
 
 	_rtn=$(
 		yad \
@@ -42,19 +39,17 @@ readonly CbList="center|fill|scale|tile"
 #----------------------------------
 RtnSelectBgStyle()
 {
-	if [ -z "$1" ]
-	then
-		CbList_1="${CbList}"
-	else
-		CbList_1="$1|${CbList}"
-	fi
+	_1=""
+	[ -n "$1" ] \
+		&& _1="$1|${CbList}" \
+		|| _1="${CbList}"
 
 	_rtn=$(
 		yad \
 			--item-separator="|" \
 			--separator="" \
 			--form \
-			--field="配置":CB "${CbList_1}" \
+			--field="配置":CB "${_1}" \
 			--title="${Title}" \
 			--fixed \
 			--on-top --center \
@@ -70,19 +65,13 @@ RtnSelectBgStyle()
 RtnDialogYN()
 {
 	yad \
-		--image="/usr/share/icons/gnome/24x24/status/dialog-question.png" \
 		--text "確定しますか ?" \
 		--title="${Title}" \
 		--fixed \
 		--on-top --center \
  		2>/dev/null
 
-	if [ "$?" = "0" ]
-	then
-		echo ""
-	else
-		echo "1"
-	fi
+	[ "$?" = "0" ] && echo "" || echo "1"
 }
 
 #-------
@@ -95,19 +84,13 @@ Repeat=""
 while true
 do
 	ImageFile=$(RtnSelectImage "${ImageFile}")
-	if [ -z "${ImageFile}" ]
-	then
-		break
-	fi
+	[ -z "${ImageFile}" ] && break
 
 	BgStyle=$(RtnSelectBgStyle "${BgStyle}")
 	if [ -n "${BgStyle}" ]
 	then
 		feh --bg-${BgStyle} ${ImageFile}
 		Repeat=$(RtnDialogYN)
-		if [ -z "${Repeat}" ]
-		then
-			break
-		fi
+		[ -z "${Repeat}" ] && break
 	fi
 done

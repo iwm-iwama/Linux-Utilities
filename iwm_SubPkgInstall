@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241220
+# Ver.iwm20241221
 #--------------------------------------------------------------------------------
 # 使用例（"pv" "yad" をインストール）
 #   dash: iwm_SubPkgInstall "pv" "yad"
@@ -7,55 +7,31 @@
 #--------------------------------------------------------------------------------
 
 # 引数なしのとき
-if [ "$#" = "0" ]
-then
-	exit
-fi
+[ "$#" = "0" ] && exit
 
-#
-Cnt="0"
+# コマンドが存在するときは引数から除外
+aptArgv=""
 
+IFS=" "
 for _1 in "$@"
 do
-	_2=$(which "${_1}")
-	if [ -z "${_2}" ]
-	then
-		Cnt="1"
-		break
-	fi
+	[ -z "$(which ${_1})" ] && aptArgv="${aptArgv} ${_1}"
 done
 
-if [ "${Cnt}" = "0" ]
-then
-	exit
-fi
+[ -z "$(echo ${aptArgv} | tr -d ' ')" ] && exit
+
+Xterm="$(which xterm)"
 
 # xterm をインストール
-if [ ! -f "/usr/bin/xterm" ]
-then
-	sudo apt install xterm
-fi
-
-# パッケージのリスト取得
-readonly DpkgList=$( \
-	LANG=C dpkg -l \
-	| grep -e "^ii" \
-	| while IFS=" " read _Status _Name _3
-	do
-		echo "${_Name}"
-	done
-)
+[ -z "${Xterm}" ] && sudo apt install xterm
 
 # パッケージをインストール
-for _1 in "$@"
-do
-	_2=$(echo "${DpkgList}" | grep -x "${_1}")
-	if [ -z "${_2}" ]
-	then
-		xterm \
-			-geometry "80x30+50+50" \
-			-title "${_1} をインストール" \
-			-fa "Noto Mono:size=11:antialias=true" \
-			-e "sudo apt install ${_1}"
-	fi
-done
+#   xterm 不在時にエラーが発生するので [ -n ... ] で存在チェック
+if [ -n "${Xterm}" ]
+then
+	xterm \
+		-geometry "80x30+50+50" \
+		-title "${aptArgv} をインストール" \
+		-fa "Noto Mono:size=11:antialias=true" \
+		-e "sudo apt install ${aptArgv}"
+fi

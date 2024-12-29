@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #coding:utf-8
 
-VERSION = "iwm20241107"
+VERSION = "iwm20241225"
 TITLE   = "デバイスをバックアップ"
 
 BG01 = " " * 70
@@ -196,7 +196,7 @@ puts(
 $ArySelectDevNum.each do |_i1|
 	_OByte, _IF, _IfSize = $AryDevInfo[_i1][1..3]
 
-	_OF1 = "#{_IF}-#{_IfSize}.dd.gz"
+	_OF1 = "#{_IF}_#{_IfSize}.dd.gz"
 	_OF2 = "#{_OF1}_restore.readme"
 
 	print(

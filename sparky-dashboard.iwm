@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241121
+# Ver.iwm20241221
 
 # オリジナルは sparky-dashboard
 # 主な変更点は以下のとおり
@@ -10,17 +10,11 @@ ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "${0}"))
 ##echo "${ThisPS}"
 ##echo "$(echo "${ThisPS}" | wc -l)"
 
-if [ "$(echo "${ThisPS}" | wc -l)" -gt "1" ]
-then
-	exit
-fi
+[ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
 
 TmpDir="/tmp/sparky-dash"
 
-if [ -d "${TmpDir}" ]
-then
-	rm -rf "${TmpDir}"
-fi
+[ -d "${TmpDir}" ] && rm -rf "${TmpDir}"
 
 mkdir "${TmpDir}"
 cp -a /usr/share/applications/*.desktop "${TmpDir}/"
