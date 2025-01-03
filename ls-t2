@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241229
+# Ver.iwm20241231
 
 Sec=$(date +%s)
 
@@ -47,7 +47,7 @@ do
 				printf "\033[38;2;190;0;0m${DiffTmFormat}" "?" "future"
 			fi
 
-			[ "$(echo ${_1} | grep 'x')" ] \
+			[ "$(echo ${_1} | grep -F 'x')" ] \
 				&& printf "  ${_6} ${_7} \033[94m %5s \033[92m ${_8}\033[0m\n" "${_5}" \
 				|| printf "  ${_6} ${_7} \033[94m %5s \033[97m ${_8}\033[0m\n" "${_5}"
 			;;

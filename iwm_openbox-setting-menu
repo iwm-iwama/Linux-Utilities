@@ -1,9 +1,11 @@
 #!/bin/dash
-# Ver.iwm20241222
+# Ver.iwm20250103
 
 # 以下の使用を想定
 #   Openbox + tint2
 #   $HOME/.config/openbox/autostart から起動
+
+iwm_SubPkgInstall "yad"
 
 readonly ObFile=$( \
 cat <<-EOD
@@ -29,6 +31,7 @@ cat <<-EOD
 	openbox --restart ! openbox --restart ! gtk-refresh
 	Edit Openbox ! mousepad ${ObArgv} ! mousepad
 	tint2conf ! tint2conf ! tint2conf
+	Conky On/Off ! iwm_conky_OnOff ! conky
 	Wallpaper ! iwm_feh ! feh
 EOD
 )
@@ -47,10 +50,7 @@ readonly MenuArgv=$( \
 )
 
 # 通知エリアに常駐
-yad \
+yad --text="Openbox and other settings menus" \
 	--notification --image="gtk-execute" \
 	--command="iwm_openbox-shortcut-keys" \
-	--menu="${MenuArgv}" \
-	--text="Openbox and other settings menus" \
-	--on-top --center \
-	2>/dev/null
+	--menu="${MenuArgv}"

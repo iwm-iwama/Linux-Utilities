@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241222
+# Ver.iwm20250102
 
 # キー設定は $HOME/.config/openbox/rc.xml に依存
 
@@ -35,10 +35,8 @@ Text=$( \
 	| sed -e "s/<br>\s*/\\n/ig" \
 )
 
-yad \
-	--text="${Text}" \
-	--button="Close:0!" \
+yad --text="${Text}" \
+	--button="Close:0" \
 	--title="Openbox ショートカットキー" \
-	--width="320" --fixed \
-	--on-top --center \
+	--width="280" --fixed --borders="4" --center --on-top \
 	2>/dev/null

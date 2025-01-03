@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #coding:utf-8
 
-VERSION = "iwm20241225"
+VERSION = "iwm20250102"
 TITLE   = "デバイスをバックアップ"
 
 BG01 = " " * 70
@@ -162,17 +162,15 @@ if $ArySelectDevNum.length == 0
 	Term.end
 end
 
-title = "出力フォルダ"
+$title = "出力フォルダ"
 $OD = %x(
-	yad \
-	--file \
-	--filename="/home/#{USER}" \
-	--directory \
-	--title="#{title}" \
-	--width="640" \
-	--center \
-	--on-top \
-	2>/dev/null \
+	yad --file \
+		--directory \
+		--filename="#{Dir.getwd}" \
+		--button="Cancel:1" --button="OK:0" \
+		--title="#{$title}" \
+		--width="640" --borders="4" --center --on-top \
+		2>/dev/null \
 ).strip
 
 if $OD.length == 0
@@ -181,7 +179,7 @@ end
 
 puts(
 	"",
-	"\033[93m#{title}",
+	"\033[93m#{$title}",
 	"\033[97m> \033[96m#{$OD}"
 )
 

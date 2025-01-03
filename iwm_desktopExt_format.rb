@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 #coding:utf-8
-# Ver.iwm20241107
+# Ver.iwm20250102
 
 require "io/console"
 
 # 必要なパッケージをインストール
 %x(iwm_SubPkgInstall "yad")
-print "\033[2J\033[1;1H;" # clear
 
+print "\033[2J", "\033[1;1H"
 puts
-$Title = "整形する desktop ファイル？"
+$Title = "整形する *.desktop ファイル？"
 puts "\033[93m#{$Title}\033[0m"
 
 Signal.trap(:INT) do
@@ -27,17 +27,15 @@ end
 LN = "-" * 60
 
 $AryFn = %x(
-	yad \
-	--file \
-	--multiple \
-	--file-filter=".desktop | *.desktop" \
-	--separator="\t" \
-	--title="#{$Title}" \
-	--width="640" \
-	--height="480" \
-	--center \
-	--on-top \
-	2>/dev/null \
+	yad --file \
+		--multiple \
+		--filename="#{Dir.getwd}" \
+		--file-filter=".desktop | *.desktop" \
+		--separator="\t" \
+		--button="Cancel:1" --button="OK:0" \
+		--title="#{$Title}" \
+		--width="640" --height="480" --borders="4" --center --on-top \
+		2>/dev/null \
 ).strip.split("\t")
 
 if $AryFn.size > 0
@@ -88,8 +86,8 @@ $AryResult.each do |_a1|
 end
 
 puts LN
-print "\033[93m実行しますか？ [Y/n]\033[0m"
-if ! (STDIN.getch =~ /Y/i)
+print "\033[95m実行しますか \033[97m\033[45m Yes=1 \033[49m\n\033[95m?\033[97m "
+if STDIN.gets.strip != "1"
 	SubExit()
 end
 

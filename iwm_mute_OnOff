@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241229
+# Ver.iwm20250101
 
 # ALSA
 #	[ $(amixer sget Master | grep -E ' \[on\]$')" ] \
@@ -7,6 +7,6 @@
 #		|| amixer sset Master on
 
 # PulseAudio
-[ "$(LANG=C pactl get-sink-mute @DEFAULT_SINK@ | grep 'Mute: no')" ] \
+[ "$(LANG=C pactl get-sink-mute @DEFAULT_SINK@ | grep -F 'Mute: no')" ] \
 	&& pactl set-sink-mute @DEFAULT_SINK@ 1 \
 	|| pactl set-sink-mute @DEFAULT_SINK@ 0

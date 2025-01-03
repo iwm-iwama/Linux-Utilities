@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241221
+# Ver.iwm20250101
 
 # オリジナルは sparky-dashboard
 # 主な変更点は以下のとおり
@@ -23,9 +23,9 @@ cd "${TmpDir}"
 
 find * -type f -exec grep -l 'NoDisplay=true' {} \; | xargs rm -f
 
-yad --icons --read-dir="${TmpDir}" --monitor --item-width=100 \
-	--sort-by-name --center --undecorated --skip-taskbar --borders=20 \
-	--button="Close!gtk-close":1 --buttons-layout=center --maximized \
+yad --icons --read-dir="${TmpDir}" --monitor --item-width="80" \
+	--sort-by-name --undecorated --skip-taskbar --borders="20" \
+	--button="Close:1" --buttons-layout=center --maximized \
 	2>/dev/null
 
 rm -rf "${TmpDir}"

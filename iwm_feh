@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20241221
+# Ver.iwm20250102
 
 iwm_SubPkgInstall "feh" "yad"
 
@@ -7,7 +7,7 @@ Title="壁紙変更"
 
 #--------------------------------------------
 # RtnSelectImage
-#   $1 = 壁紙のファイル名 (例) ~/bg01.jpg
+#   $1 = 壁紙のファイル名 (例) "~/bg01.jpg"
 #--------------------------------------------
 RtnSelectImage()
 {
@@ -16,27 +16,26 @@ RtnSelectImage()
 	[ -z "${_fn}" ] && _fn="$HOME"
 
 	_rtn=$(
-		yad \
-		--file \
-		--filename="${_fn}" \
-		--file-filter="画像 ファイル (*.jpg *.png *.gif) | *.jpg *.png *.gif" \
-		--file-filter="すべてのファイル | *" \
-		--add-preview --large-preview \
-		--title="${Title}" \
-		--width="640" \
-		--on-top --center \
- 		2>/dev/null \
- 	)
+		yad --file \
+			--filename="${_fn}" \
+			--file-filter="画像 ファイル (*.jpg *.png *.gif) | *.jpg *.png *.gif" \
+			--file-filter="すべてのファイル | *" \
+			--add-preview --large-preview \
+			--button="Cancel:1" --button="OK:0" \
+			--title="${Title}" \
+			--width="640" --borders="4" --center --on-top \
+			2>/dev/null \
+	)
 
 	echo "${_rtn}"
 }
 
 readonly CbList="center|fill|scale|tile"
 
-#----------------------------------
+#------------------------------------
 # RtnSelectBgStyle
-#   $1 = 壁紙の配置方法 (例) fill
-#----------------------------------
+#   $1 = 壁紙の配置方法 (例) "fill"
+#------------------------------------
 RtnSelectBgStyle()
 {
 	_1=""
@@ -45,33 +44,33 @@ RtnSelectBgStyle()
 		|| _1="${CbList}"
 
 	_rtn=$(
-		yad \
+		yad --form \
 			--item-separator="|" \
 			--separator="" \
-			--form \
 			--field="配置":CB "${_1}" \
+			--button="Cancel:1" --button="OK:0" \
 			--title="${Title}" \
-			--fixed \
-			--on-top --center \
+			--fixed --borders="4" --center --on-top \
 	 		2>/dev/null \
 	)
 
 	echo "${_rtn}"
 }
 
-#--------------
-# RtnDialogYN
-#--------------
-RtnDialogYN()
+#-----------------------------------------
+# RtnConfirm
+#   $1 = 確認文言 (例) ""確定しますか ?"
+#-----------------------------------------
+RtnConfirm()
 {
-	yad \
-		--text "確定しますか ?" \
+	yad --text "$1" \
+		--button="Cancel:1" --button="OK:0" \
 		--title="${Title}" \
-		--fixed \
-		--on-top --center \
- 		2>/dev/null
+		--fixed --borders="4" --center --on-top \
+		2>/dev/null
 
-	[ "$?" = "0" ] && echo "" || echo "1"
+	# OK=0, Cancel=1
+	echo "$?"
 }
 
 #-------
@@ -90,7 +89,6 @@ do
 	if [ -n "${BgStyle}" ]
 	then
 		feh --bg-${BgStyle} ${ImageFile}
-		Repeat=$(RtnDialogYN)
-		[ -z "${Repeat}" ] && break
+		[ $(RtnConfirm "確定しますか ?" "${Title}") = "0" ] && break
 	fi
 done

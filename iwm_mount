@@ -1,8 +1,10 @@
 #!/bin/dash
-# Ver.iwm20241222
+# Ver.iwm20250102
 #--------------------------------------------------------------------------------
 # デバイスをマウント／アンマウント
 #--------------------------------------------------------------------------------
+iwm_SubPkgInstall "yad"
+
 readonly TmpFn="./$$.tmp"
 
 lsblk -n --raw -o FSTYPE,PATH,MOUNTPOINTS,LABEL,NAME \
@@ -36,13 +38,13 @@ readonly Dev="/dev"
 readonly List=$( \
 	echo "${TmpList}" \
 	| sed -e "s/,/\\n/g" \
-	| yad \
-		--list --checklist \
-		--column="On" --column="FS" --column="${Dev}" --column="${Mnt}" \
+	| yad --list \
+		--checklist \
+		--column="" --column="FS" --column="${Dev}" --column="${Mnt}" \
 		--print-all --separator="," \
+		--button="Cancel:1" --button="OK:0" \
 		--title="デバイスのマウント" \
-		--height="400" --width="480" --fixed \
-		--on-top --center \
+		--height="320" --width="480" --fixed --borders="4" --center --on-top \
 		2>/dev/null \
 )
 
