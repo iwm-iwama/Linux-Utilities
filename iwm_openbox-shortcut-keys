@@ -1,7 +1,10 @@
 #!/bin/dash
-# Ver.iwm20250102
-
+# Ver.iwm20250106
 # キー設定は $HOME/.config/openbox/rc.xml に依存
+
+# 複数起動禁止
+readonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
+[ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
 
 iwm_SubPkgInstall "yad"
 

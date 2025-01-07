@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 #coding:utf-8
 
-VERSION = "iwm20250102"
+require "reline"
+
+VERSION = "iwm20250105"
 TITLE   = "デバイスをバックアップ"
 
 BG01 = " " * 70
@@ -150,8 +152,7 @@ $ArySelectDevNum = []
 
 # 複数指定する際は [SPACE] か ',' で区切る
 # (例) > "2 3 5" => [2, 3, 5]
-print "\033[93m? \033[97m"
-STDIN.gets.split(/[ ,]/).each do |_s1|
+Reline.readline("\033[93m? \033[97m", false).strip.split(/[ ,]/).each do |_s1|
 	_i1 = _s1.to_i
 	if _i1 > 0 && _i1 < $AryDevInfo.length
 		$ArySelectDevNum << _i1

@@ -1,18 +1,16 @@
 #!/bin/dash
-# Ver.iwm20250101
+# Ver.iwm20250106
 
 # オリジナルは sparky-dashboard
 # 主な変更点は以下のとおり
 # ・#!/bin/bash から #!/bin/dash に変更
 # ・複数起動を禁止
 
-ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "${0}"))
-##echo "${ThisPS}"
-##echo "$(echo "${ThisPS}" | wc -l)"
-
+# 複数起動禁止
+readonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
 [ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
 
-TmpDir="/tmp/sparky-dash"
+readonly TmpDir="/tmp/sparky-dash"
 
 [ -d "${TmpDir}" ] && rm -rf "${TmpDir}"
 

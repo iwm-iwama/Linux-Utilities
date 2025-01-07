@@ -1,9 +1,12 @@
 #!/bin/dash
-# Ver.iwm20250103
-
+# Ver.iwm20250106
 # 以下の使用を想定
 #   Openbox + tint2
 #   $HOME/.config/openbox/autostart から起動
+
+# 複数起動禁止
+readonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
+[ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
 
 iwm_SubPkgInstall "yad"
 
