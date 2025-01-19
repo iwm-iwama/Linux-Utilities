@@ -1,16 +1,16 @@
 #!/bin/dash
-# Ver.iwm20250106
+# Ver.iwm20250116
 # 以下の使用を想定
 #   Openbox + tint2
 #   $HOME/.config/openbox/autostart から起動
 
 # 複数起動禁止
-readonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
-[ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
+#xreadonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
+#x[ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
 
 iwm_SubPkgInstall "yad"
 
-readonly ObFile=$( \
+readonly ObFile=$(
 cat <<-EOD
 	rc.xml
 	menu.xml
@@ -27,33 +27,31 @@ do
 	ObArgv="${ObArgv} $HOME/.config/openbox/${_1}"
 done
 
-# Label ! Command ! Icon
-readonly Menu=$( \
+readonly Menu=$(
 cat <<-EOD
+	Update ! x-terminal-emulator -e iwm_update ! synaptic
+	Synaptic ! synaptic-pkexec ! synaptic
 	obconf ! obconf ! obconf
 	openbox --restart ! openbox --restart ! gtk-refresh
 	Edit Openbox ! mousepad ${ObArgv} ! mousepad
 	tint2conf ! tint2conf ! tint2conf
 	Conky On/Off ! iwm_conky_OnOff ! conky
 	Wallpaper ! iwm_feh ! feh
+	Volume ! iwm_volume ! stock_volume-med
 EOD
 )
 
-# 変換後のフォーマット
-# "Openbox!obconf!obconf|Openbox Restart!openbox --restart!gtk-refresh|tint2!tint2conf!tint2conf|Wallpaper!iwm_feh!feh|"
-readonly MenuArgv=$( \
+# Label ! Command ! Icon |
+readonly MenuArgv=$(
 	echo "${Menu}" \
-	| mawk \
-	'$0 {
-		sub(/^[[:blank:]]+/, "")
-		sub(/[[:blank:]]+$/, "")
-		gsub(/[[:blank:]]*\![[:blank:]]*/, "!")
-		printf("%s|", $0)
-	}'
+	| sed -E 's/^[ ]+//g' \
+	| sed -E 's/[ ]*![ ]*/!/g' \
+	| sed -E 's/[ ]+$//g' \
+	| tr '\n' '|' \
 )
 
 # 通知エリアに常駐
-yad --text="Openbox and other settings menus" \
-	--notification --image="gtk-execute" \
+yad	--notification --image="gtk-execute" \
+	--text="Openbox and other settings menus" \
 	--command="iwm_openbox-shortcut-keys" \
 	--menu="${MenuArgv}"

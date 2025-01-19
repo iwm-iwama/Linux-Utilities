@@ -1,0 +1,70 @@
+#!/bin/dash
+# Ver.iwm20241210
+
+readonly Bn=$(basename "$0")
+
+#----------------------------------------------------------------------
+# 2024-12-04
+#   https://sparkylinux.org/sparky-gpg-key-issue-on-testing/
+#
+#   /etc/apt/sources.list
+#     deb [signed-by=/etc/apt/trusted.gpg.d/sparky-repo.asc] https://repo.sparkylinux.org/ core main 
+#
+##sudo cp /usr/share/keyrings/sparky.gpg.key /etc/apt/trusted.gpg.d/sparky-repo.asc
+#----------------------------------------------------------------------
+echo "\033[97;44m dpkg --purge \033[97;45m Name \033[0m"
+echo
+
+dpkg -l \
+| grep -E "^rm " \
+| while IFS=" " read Desired Name Version
+do
+	echo "\033[97;45m ${Name} \033[0m"
+	sudo dpkg --purge ${Name}
+	echo
+done
+
+#----------------------------------------------------------------------
+_1=$(
+cat <<-EOD
+	dpkg --configure -a
+	apt update
+	apt upgrade
+	apt dist-upgrade
+	apt autoclean
+	apt autoremove
+EOD
+)
+
+IFS="
+"
+
+for _2 in $(echo "${_1}")
+do
+	echo "\033[97;44m ${_2} \033[0m"
+	eval "sudo ${_2}"
+	echo
+done
+
+#----------------------------------------------------------------------
+readonly Olog="$HOME/${Bn}.log"
+
+_1=$(
+cat <<-EOD
+	dpkg -l | grep -E "^ii " > "${Olog}"
+EOD
+)
+
+IFS="
+"
+
+for _2 in $(echo "${_1}")
+do
+	echo "\033[97;44m ${_2} \033[0m"
+	eval "${_2}"
+	echo
+done
+
+#----------------------------------------------------------------------
+echo -n "(END)"
+read _1

@@ -1,0 +1,64 @@
+#!/bin/dash
+# Ver.iwm20250116
+
+# 複数起動禁止
+readonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
+[ $(echo "${ThisPS}" | wc -l) -ge 2 ] && exit
+
+iwm_SubPkgInstall "yad"
+
+bMute=0
+[ "$(LANG=C pactl get-sink-mute @DEFAULT_SINK@ | grep -i -F 'Mute: yes')" ] \
+&& bMute=1
+
+if [ "${bMute}" = "0" ]
+then
+	yad \
+		--text=" ミュート しますか ?" \
+		--button="No:1" --button="Yes:0" \
+		--undecorated \
+		--fixed --borders="6" --on-top --center \
+		2>/dev/null \
+
+	if [ "$?" = "0" ]
+	then
+		# Mute On
+		pactl set-sink-mute @DEFAULT_SINK@ 1
+		exit
+	fi
+else
+	yad \
+		--text=" ミュート <span foreground=\"#f55\">解除</span> しますか ?" \
+		--button="No:1" --button="Yes:0" \
+		--undecorated \
+		--fixed --borders="6" --on-top --center \
+		2>/dev/null \
+
+	[ "$?" = "1" ] && exit
+fi
+
+# Mute Off
+pactl set-sink-mute @DEFAULT_SINK@ 0
+
+Vol=$(
+	LANG=C pactl get-sink-volume @DEFAULT_SINK@ \
+	| sed -e 's/[ ,]/\n/g' \
+	| grep -e '[0-9]%' \
+	| while read _1
+	do
+		echo "${_1}"
+		break
+	done
+)
+
+yad \
+	--text " 音量" \
+	--scale --value="${Vol}" --mark="0:0" --mark="25:25" --mark="50:50" --mark="75:75" --mark="100:100" \
+	--print-partial \
+	--button="OK:0" \
+	--undecorated \
+	--width="400" --fixed --borders="6" --on-top --center \
+| while IFS=" " read _1
+do
+	pactl set-sink-volume @DEFAULT_SINK@ "${_1}%"
+done
