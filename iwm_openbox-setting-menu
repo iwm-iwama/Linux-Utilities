@@ -29,12 +29,12 @@ done
 
 readonly Menu=$(
 cat <<-EOD
-	Update ! x-terminal-emulator -e iwm_update ! synaptic
-	Synaptic ! synaptic-pkexec ! synaptic
 	obconf ! obconf ! obconf
 	openbox --restart ! openbox --restart ! gtk-refresh
 	Edit Openbox ! mousepad ${ObArgv} ! mousepad
 	tint2conf ! tint2conf ! tint2conf
+	Synaptic ! synaptic-pkexec ! synaptic
+	Update ! x-terminal-emulator -e iwm_update ! synaptic
 	Conky On/Off ! iwm_conky_OnOff ! conky
 	Wallpaper ! iwm_feh ! feh
 	Volume ! iwm_volume ! stock_volume-med

@@ -1,5 +1,5 @@
 #!/bin/dash
-# Ver.iwm20250106
+# Ver.iwm20250130
 # キー設定は $HOME/.config/openbox/rc.xml に依存
 
 # 複数起動禁止
@@ -9,7 +9,7 @@ readonly ThisPS=$(ps --no-headers -o pid,cmd -C $(basename "$0"))
 iwm_SubPkgInstall "yad"
 
 # 読みやすくするため <br> 要素を実装
-Text=$( \
+Text=$(
 cat <<-EOD
 <big>
 	<span face="sans">
@@ -21,16 +21,16 @@ cat <<-EOD
 		<span face="mono" foreground="#f80">  +1%     </span>[Shift]+[F3]<br>
 		<br>
 		<span foreground="#fb0"> 輝度 </span><br>
-		<span face="mono" foreground="#f50">  -10%    </span>[Ctrl]+[F5]<br>
-		<span face="mono" foreground="#f50">  +10%    </span>[Ctrl]+[F6]<br>
-		<span face="mono" foreground="#f80">  -2%     </span>[Shift]+[F5]<br>
-		<span face="mono" foreground="#f80">  +2%     </span>[Shift]+[F6]<br>
+		<span face="mono" foreground="#f50">  -5%     </span>[Ctrl]+[F5]<br>
+		<span face="mono" foreground="#f50">  +5%     </span>[Ctrl]+[F6]<br>
+		<span face="mono" foreground="#f80">  -1%     </span>[Shift]+[F5]<br>
+		<span face="mono" foreground="#f80">  +1%     </span>[Shift]+[F6]<br>
 	</span>
 </big>
 EOD
 )
 
-Text=$( \
+Text=$(
 	echo "${Text}" \
 	| sed -E "s/^\s+//" \
 	| sed -E "s/\s+$//" \
@@ -39,7 +39,7 @@ Text=$( \
 )
 
 yad --text="${Text}" \
-	--button="Close:0" \
+	--button="Ok:0" \
 	--title="Openbox ショートカットキー" \
 	--width="280" --fixed --borders="4" --center --on-top \
 	2>/dev/null
